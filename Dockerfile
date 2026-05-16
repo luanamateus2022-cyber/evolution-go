@@ -4,13 +4,12 @@ RUN apk update && apk add --no-cache git build-base libjpeg-turbo-dev libwebp-de
 
 WORKDIR /build
 
-COPY go.mod go.sum ./
+COPY . .
 
+RUN rm -rf whatsmeow-lib
 RUN git clone https://github.com/evolution-foundation/whatsmeow.git whatsmeow-lib
 
-RUN go mod tidy && go mod download
-
-COPY . .
+RUN go mod tidy
 
 ARG VERSION=dev
 RUN CGO_ENABLED=1 go build -ldflags "-X main.version=${VERSION}" -o server ./cmd/evolution-go
